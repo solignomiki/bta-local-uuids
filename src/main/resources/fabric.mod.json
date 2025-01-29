@@ -1,42 +1,42 @@
 {
   "schemaVersion": 1,
-  "id": "examplemod",
+  "id": "localuuids",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This mod aims to help new BTA modders.",
+  "name": "Local UUIDs",
+  "description": "Makes BTA store and use local uuids instead of Microsoft ones",
   "authors": [
-    "Turnip Labs"
+    "solignomiki"
   ],
   "contact": {
     "homepage": "",
     "sources": ""
   },
 
-	"icon": "icon.png",
+	"icon": "icon.gif",
   "license": "CC0-1.0",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-			"turniplabs.examplemod.ExampleMod"
+			"solignomiki.localuuids.LocalUUIDs"
     ],
 		"beforeGameStart": [
-			"turniplabs.examplemod.ExampleMod"
+			"solignomiki.localuuids.LocalUUIDs"
 		],
 		"afterGameStart": [
-			"turniplabs.examplemod.ExampleMod"
+			"solignomiki.localuuids.LocalUUIDs"
 		],
 		"recipesReady": [
-			"turniplabs.examplemod.ExampleMod"
+			"solignomiki.localuuids.LocalUUIDs"
 		]
 	},
   "mixins": [
-      "examplemod.mixins.json"
+      "localuuids.mixins.json"
   ],
 
   "depends": {
-		"minecraft": "*",
+		"minecraft": "^7.2-beta",
     "fabricloader": ">=0.15.5"
   },
   "suggests": {

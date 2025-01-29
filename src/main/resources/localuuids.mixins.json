@@ -1,11 +1,15 @@
 {
     "required": true,
     "minVersion": "0.8",
-    "package": "turniplabs.examplemod.mixin",
+    "package": "solignomiki.localuuids.mixin",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
     ],
     "client": [
+    ],
+    "server": [
+      "UUIDHelperMixin",
+      "PacketHandlerLoginMixin"
     ],
     "injectors": {
         "defaultRequire": 1
