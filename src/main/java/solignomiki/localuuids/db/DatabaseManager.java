@@ -2,6 +2,7 @@ package solignomiki.localuuids.db;
 
 import com.google.common.io.Files;
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import solignomiki.localuuids.LocalUUIDs;
 
 import java.io.BufferedReader;
@@ -28,9 +29,6 @@ public class DatabaseManager {
 		try {
 			BufferedReader bufferedReader = Files.newReader(dbFile, StandardCharsets.UTF_8);
 			UUIDMap = GSON.fromJson(bufferedReader, UUIDMap.class);
-			if (UUIDMap == null) {
-				UUIDMap = new UUIDMap();
-			}
 		} catch (Exception e) {
 			LocalUUIDs.LOGGER.error(e.getMessage());
 		}
@@ -68,23 +66,24 @@ public class DatabaseManager {
 	}
 
 	public class UUIDMap {
-		private Map<String, String> players = new HashMap<>();
+		@SerializedName("players")
+		public Map<String, String> players = new HashMap<>();
 
 		public void add(String username, String uuid) {
-			players.put(username, uuid);
+			players.put(username.toLowerCase(), uuid);
 		}
 
 		public void remove(String username) {
-			players.remove(username);
+			players.remove(username.toLowerCase());
 		}
 
 		public String getUuid(String username) {
-			return players.get(username);
+			return players.get(username.toLowerCase());
 		}
 
 		public String getUsername(String uuid) {
 			for (Map.Entry<String, String> entry : players.entrySet()) {
-				if (entry.getValue().equals(uuid)) {
+				if (entry.getValue().equalsIgnoreCase(uuid)) {
 					return entry.getKey();
 				}
 			}
