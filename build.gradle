@@ -121,6 +121,8 @@ dependencies {
 	implementation "org.lwjgl:lwjgl-openal:$lwjglVersion"
 	implementation "org.lwjgl:lwjgl-opengl:$lwjglVersion"
 	implementation "org.lwjgl:lwjgl-stb:$lwjglVersion"
+	implementation("org.xerial:sqlite-jdbc:${project.sqlite_jdbc_version}")
+	include("org.xerial:sqlite-jdbc:${project.sqlite_jdbc_version}")
 }
 
 java {

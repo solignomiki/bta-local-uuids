@@ -1,0 +1,3 @@
+localuuids.unknown_error=Случилась неизвестная ошибка!
+localuuids.unknown_user=Неизвестный пользователь!
+localuuids.tied_username_to_uuid=Имя пользователя %s успешно привязано к UUID %s

@@ -3,12 +3,11 @@ package solignomiki.localuuids.mixin;
 import net.minecraft.core.util.helper.UUIDHelper;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import solignomiki.localuuids.LocalUUIDs;
+import solignomiki.localuuids.dbmanagers.JsonDatabaseManager;
 
 import java.util.UUID;
 
@@ -25,9 +24,11 @@ abstract class UUIDHelperMixin {
 		String uuidString = LocalUUIDs.DB_MANAGER.findPlayerUUID(username);
 		if (uuidString == null) {
 			uuidString = UUID.randomUUID().toString().toString();
-			LocalUUIDs.DB_MANAGER.addPlayer(username, uuidString);
-			LocalUUIDs.DB_MANAGER.saveDb();
-			LocalUUIDs.DB_MANAGER.reloadDb();
+			LocalUUIDs.DB_MANAGER.putPlayer(username, uuidString);
+			if (LocalUUIDs.DB_MANAGER instanceof JsonDatabaseManager) {
+				((JsonDatabaseManager) LocalUUIDs.DB_MANAGER).saveDb();
+				((JsonDatabaseManager) LocalUUIDs.DB_MANAGER).reloadDb();
+			}
 		}
 		UUID uuid = UUID.fromString(uuidString);
 		cir.setReturnValue(uuid);

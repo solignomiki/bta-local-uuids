@@ -3,7 +3,6 @@ package solignomiki.localuuids.mixin;
 import net.minecraft.core.net.handler.PacketHandler;
 import net.minecraft.core.net.packet.PacketLogin;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.net.command.commands.CommandWhitelist;
 import net.minecraft.server.net.handler.PacketHandlerLogin;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,9 +10,9 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import solignomiki.localuuids.LocalUUIDs;
+import solignomiki.localuuids.dbmanagers.JsonDatabaseManager;
 
 import java.util.UUID;
 
@@ -30,13 +29,15 @@ abstract class PacketHandlerLoginMixin extends PacketHandler {
 	)
 	private void onHandleLoginPacket(PacketLogin loginPacket, CallbackInfo ci) {
 		String uuid = LocalUUIDs.DB_MANAGER.findPlayerUUID(loginPacket.username);
-
+		System.out.println(uuid);
 		if (uuid == null) {
 			if (!mcServer.propertyManager.getBooleanProperty("white-list", false)) {
 				uuid = UUID.randomUUID().toString();
-				LocalUUIDs.DB_MANAGER.addPlayer(loginPacket.username, uuid);
-				LocalUUIDs.DB_MANAGER.saveDb();
-				LocalUUIDs.DB_MANAGER.reloadDb();
+				LocalUUIDs.DB_MANAGER.putPlayer(loginPacket.username, uuid);
+				if (LocalUUIDs.DB_MANAGER instanceof JsonDatabaseManager) {
+					((JsonDatabaseManager) LocalUUIDs.DB_MANAGER).saveDb();
+					((JsonDatabaseManager) LocalUUIDs.DB_MANAGER).reloadDb();
+				}
 				loginPacket.uuid = UUID.fromString(uuid);
 			}
 		} else {

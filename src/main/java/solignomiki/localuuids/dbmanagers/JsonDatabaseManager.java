@@ -1,8 +1,9 @@
-package solignomiki.localuuids.db;
+package solignomiki.localuuids.dbmanagers;
 
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import net.minecraft.core.util.helper.UUIDHelper;
 import solignomiki.localuuids.LocalUUIDs;
 
 import java.io.BufferedReader;
@@ -12,12 +13,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DatabaseManager {
+public class JsonDatabaseManager implements DatabaseManager {
 	private final File dbFile;
 	public static final Gson GSON = new Gson();
 	private UUIDMap UUIDMap = new UUIDMap();
 
-	public DatabaseManager(String path, String filename){
+	public JsonDatabaseManager(String path, String filename){
 		dbFile = new File(path + filename + ".json");
 		reloadDb();
 	}
@@ -57,8 +58,11 @@ public class DatabaseManager {
 		return UUIDMap.getUsername(uuid);
 	}
 
-	public void addPlayer(String username, String uuid) {
-		UUIDMap.add(username, uuid);
+	public void putPlayer(String username, String uuid) {
+		if (!UUIDHelper.isUUID(uuid)) {
+			throw new IllegalArgumentException();
+		}
+		UUIDMap.put(username, uuid);
 	}
 
 	public void removePlayerFromDatabase(String username) {
@@ -69,7 +73,7 @@ public class DatabaseManager {
 		@SerializedName("players")
 		public Map<String, String> players = new HashMap<>();
 
-		public void add(String username, String uuid) {
+		public void put(String username, String uuid) {
 			players.put(username.toLowerCase(), uuid);
 		}
 
