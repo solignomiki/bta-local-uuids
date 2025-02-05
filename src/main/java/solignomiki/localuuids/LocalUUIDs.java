@@ -4,8 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.net.command.CommandManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import solignomiki.localuuids.commands.GetUUIDByUsernameCommand;
-import solignomiki.localuuids.commands.TieUsernameToUUIDCommand;
+import solignomiki.localuuids.commands.UUIDCommand;
 import solignomiki.localuuids.dbmanagers.DatabaseManager;
 import solignomiki.localuuids.dbmanagers.JsonDatabaseManager;
 import solignomiki.localuuids.dbmanagers.SQLiteDatabaseManager;
@@ -63,8 +62,7 @@ public class LocalUUIDs implements ModInitializer, GameStartEntrypoint, RecipeEn
     @Override
     public void onInitialize() {
 		LOGGER.info("LocalUUIDs initialization");
-		CommandManager.registerServerCommand(new GetUUIDByUsernameCommand());
-		CommandManager.registerServerCommand(new TieUsernameToUUIDCommand());
+		CommandManager.registerServerCommand(new UUIDCommand());
         LOGGER.info("LocalUUIDs initialized.");
     }
 

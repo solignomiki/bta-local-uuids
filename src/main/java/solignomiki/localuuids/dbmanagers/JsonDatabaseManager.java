@@ -10,7 +10,9 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class JsonDatabaseManager implements DatabaseManager {
@@ -54,8 +56,8 @@ public class JsonDatabaseManager implements DatabaseManager {
 		return UUIDMap.getUuid(username);
 	}
 
-	public String findPlayerUsername(String uuid) {
-		return UUIDMap.getUsername(uuid);
+	public List<String> findPlayerUsernames(String uuid) {
+		return UUIDMap.getUsernames(uuid);
 	}
 
 	public void putPlayer(String username, String uuid) {
@@ -65,8 +67,12 @@ public class JsonDatabaseManager implements DatabaseManager {
 		UUIDMap.put(username, uuid);
 	}
 
-	public void removePlayerFromDatabase(String username) {
+	public void removePlayerFromDatabaseByUsername(String username) {
 		UUIDMap.remove(username);
+	}
+
+	public void removePlayerFromDatabaseByUUID(String uuid) {
+		UUIDMap.removeByUUID(uuid);
 	}
 
 	public class UUIDMap {
@@ -81,17 +87,26 @@ public class JsonDatabaseManager implements DatabaseManager {
 			players.remove(username.toLowerCase());
 		}
 
+		public void removeByUUID(String uuid) {
+			for (Map.Entry<String, String> entry : players.entrySet()) {
+				if (entry.getValue().equalsIgnoreCase(uuid)) {
+					players.remove(entry.getKey());
+				}
+			}
+		}
+
 		public String getUuid(String username) {
 			return players.get(username.toLowerCase());
 		}
 
-		public String getUsername(String uuid) {
+		public List<String> getUsernames(String uuid) {
+			List<String> usernames = new ArrayList<String>();
 			for (Map.Entry<String, String> entry : players.entrySet()) {
 				if (entry.getValue().equalsIgnoreCase(uuid)) {
-					return entry.getKey();
+					usernames.add(entry.getKey());
 				}
 			}
-			return null;
+			return usernames;
 		}
 	}
 }

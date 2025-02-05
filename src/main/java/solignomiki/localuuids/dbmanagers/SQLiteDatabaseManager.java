@@ -37,9 +37,9 @@ public class SQLiteDatabaseManager implements DatabaseManager {
 	public String findPlayerUUID(String username) {
 		String uuid = null;
 		try (PreparedStatement preparedStatement = SQLiteConnection.prepareStatement(
-			"SELECT uuid FROM players WHERE username = ?"
+			"SELECT uuid FROM players WHERE username = ? COLLATE NOCASE"
 		)) {
-			preparedStatement.setString(1, username);
+			preparedStatement.setString(1, username.toLowerCase());
 			try (ResultSet rs = preparedStatement.executeQuery()) {
 				if (rs.next()) {
 					uuid = rs.getString("uuid");
@@ -60,12 +60,12 @@ public class SQLiteDatabaseManager implements DatabaseManager {
 	public List<String> findPlayerUsernames(String uuid) {
 		List<String> usernames = new ArrayList<>();
 		try (PreparedStatement preparedStatement = SQLiteConnection.prepareStatement(
-			"SELECT username FROM players WHERE uuid = ?"
+			"SELECT username FROM players WHERE uuid = ? COLLATE NOCASE"
 		)) {
-			preparedStatement.setString(1, uuid);
+			preparedStatement.setString(1, uuid.toLowerCase());
 			try (ResultSet rs = preparedStatement.executeQuery()) {
 				while (rs.next()) {
-					usernames.add(rs.getString("username"));
+					usernames.add(rs.getString("username").toLowerCase());
 				}
 			}
 			SQLiteConnection.commit();
@@ -88,9 +88,9 @@ public class SQLiteDatabaseManager implements DatabaseManager {
 
 		boolean found = false;
 		try (PreparedStatement preparedStatement = SQLiteConnection.prepareStatement(
-			"SELECT uuid FROM players WHERE username = ?"
+			"SELECT uuid FROM players WHERE username = ? COLLATE NOCASE"
 		)) {
-			preparedStatement.setString(1, username);
+			preparedStatement.setString(1, username.toLowerCase());
 			try (ResultSet rs = preparedStatement.executeQuery()) {
 				if (rs.next()) {
 					found = true;
@@ -110,8 +110,8 @@ public class SQLiteDatabaseManager implements DatabaseManager {
 				"INSERT INTO players(username, uuid) VALUES(?, ?)",
 				Statement.RETURN_GENERATED_KEYS
 			)) {
-				preparedStatement.setString(1, username);
-				preparedStatement.setString(2, uuid);
+				preparedStatement.setString(1, username.toLowerCase());
+				preparedStatement.setString(2, uuid.toLowerCase());
 				preparedStatement.executeUpdate();
 			} catch (SQLException e) {
 				LocalUUIDs.LOGGER.error("SQL exception erupted while putting player in BD!");
@@ -123,10 +123,10 @@ public class SQLiteDatabaseManager implements DatabaseManager {
 			}
 		} else {
 			try (PreparedStatement preparedStatement = SQLiteConnection.prepareStatement(
-				"UPDATE players SET uuid = ? WHERE username = ?"
+				"UPDATE players SET uuid = ? WHERE username = ? COLLATE NOCASE"
 			)) {
-				preparedStatement.setString(1, uuid);
-				preparedStatement.setString(2, username);
+				preparedStatement.setString(1, uuid.toLowerCase());
+				preparedStatement.setString(2, username.toLowerCase());
 				preparedStatement.executeUpdate();
 			} catch (SQLException e) {
 				LocalUUIDs.LOGGER.error("SQL exception erupted while updating player in BD!");
@@ -144,14 +144,38 @@ public class SQLiteDatabaseManager implements DatabaseManager {
 		}
 	}
 
-	public void removePlayerFromDatabase(String username) {
+	public void removePlayerFromDatabaseByUsername(String username) {
 		try (PreparedStatement preparedStatement = SQLiteConnection.prepareStatement(
-			"DELETE FROM players WHERE username = ?"
+			"DELETE FROM players WHERE username = ? COLLATE NOCASE"
 		)) {
-			preparedStatement.setString(1, username);
+			preparedStatement.setString(1, username.toLowerCase());
+			int rowsAffected = preparedStatement.executeUpdate();
+			if (rowsAffected < 1) {
+				throw new IllegalArgumentException();
+			}
 			SQLiteConnection.commit();
 		} catch (SQLException e) {
-			LocalUUIDs.LOGGER.error("SQL exception erupted while removing player in BD!");
+			LocalUUIDs.LOGGER.error("SQL exception erupted while removing player by username in BD!");
+			try {
+				SQLiteConnection.rollback();
+			} catch (SQLException ex) {
+				LocalUUIDs.LOGGER.error("Rollback failed: {}", ex.getMessage());
+			}
+		}
+	}
+
+	public void removePlayerFromDatabaseByUUID(String uuid) {
+		try (PreparedStatement preparedStatement = SQLiteConnection.prepareStatement(
+			"DELETE FROM players WHERE uuid = ? COLLATE NOCASE"
+		)) {
+			preparedStatement.setString(1, uuid.toLowerCase());
+			int rowsAffected = preparedStatement.executeUpdate();
+			if (rowsAffected < 1) {
+				throw new IllegalArgumentException();
+			}
+			SQLiteConnection.commit();
+		} catch (SQLException e) {
+			LocalUUIDs.LOGGER.error("SQL exception erupted while removing player by uuid in BD!");
 			try {
 				SQLiteConnection.rollback();
 			} catch (SQLException ex) {

@@ -1,3 +1,4 @@
-localuuids.unknown_error=Случилась неизвестная ошибка!
-localuuids.unknown_user=Неизвестный пользователь!
+localuuids.errors.unknown_error=Случилась неизвестная ошибка!
+localuuids.errors.unknown_user=Неизвестный пользователь!
 localuuids.tied_username_to_uuid=Имя пользователя %s успешно привязано к UUID %s
+localuuids.removed_player=Пользователь %s успешно убран

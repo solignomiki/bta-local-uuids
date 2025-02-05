@@ -1,3 +1,4 @@
-localuuids.unknown_error=Unknown error has occurred!
-localuuids.unknown_user=Unknown user!
+localuuids.errors.unknown_error=Unknown error has occurred!
+localuuids.errors.unknown_user=Unknown user!
 localuuids.tied_username_to_uuid=Username %s tied to UUID %s successfully
+localuuids.removed_player=Player %s removed successfully

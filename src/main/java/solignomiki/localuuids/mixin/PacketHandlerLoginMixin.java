@@ -29,7 +29,6 @@ abstract class PacketHandlerLoginMixin extends PacketHandler {
 	)
 	private void onHandleLoginPacket(PacketLogin loginPacket, CallbackInfo ci) {
 		String uuid = LocalUUIDs.DB_MANAGER.findPlayerUUID(loginPacket.username);
-		System.out.println(uuid);
 		if (uuid == null) {
 			if (!mcServer.propertyManager.getBooleanProperty("white-list", false)) {
 				uuid = UUID.randomUUID().toString();
