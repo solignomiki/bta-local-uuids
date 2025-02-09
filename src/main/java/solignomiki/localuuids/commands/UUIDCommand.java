@@ -2,9 +2,9 @@ package solignomiki.localuuids.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.arguments.ArgumentTypeString;
+import com.mojang.brigadier.builder.ArgumentBuilderLiteral;
+import com.mojang.brigadier.builder.ArgumentBuilderRequired;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.lang.I18n;
@@ -33,11 +33,11 @@ public class UUIDCommand implements CommandManager.CommandRegistry {
 	}
 
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
-		dispatcher.register((LiteralArgumentBuilder<CommandSource>) (Object) LiteralArgumentBuilder.literal("uuid")
+		dispatcher.register((ArgumentBuilderLiteral<CommandSource>) (Object) (ArgumentBuilderLiteral.literal("uuid"))
 			.requires((c) -> {return ((ServerCommandSource) c).hasAdmin();})
-			.then(LiteralArgumentBuilder.literal("tie")
-				.then(RequiredArgumentBuilder.argument("username", StringArgumentType.word())
-					.then(RequiredArgumentBuilder.argument("uuid", StringArgumentType.word())
+			.then(ArgumentBuilderLiteral.literal("tie")
+				.then(ArgumentBuilderRequired.argument("username", ArgumentTypeString.word())
+					.then(ArgumentBuilderRequired.argument("uuid", ArgumentTypeString.word())
 						.executes((c) -> {
 							CommandSource source = (CommandSource)c.getSource();
 							Player player = source.getSender();
@@ -58,8 +58,8 @@ public class UUIDCommand implements CommandManager.CommandRegistry {
 					)
 				)
 			)
-			.then(LiteralArgumentBuilder.literal("get")
-				.then(RequiredArgumentBuilder.argument("username", StringArgumentType.word())
+			.then(ArgumentBuilderLiteral.literal("get")
+				.then(ArgumentBuilderRequired.argument("username", ArgumentTypeString.word())
 					.executes((c) -> {
 						CommandSource source = (CommandSource)c.getSource();
 						Player player = source.getSender();
@@ -73,8 +73,8 @@ public class UUIDCommand implements CommandManager.CommandRegistry {
 					})
 				)
 			)
-			.then(LiteralArgumentBuilder.literal("getusernames")
-				.then(RequiredArgumentBuilder.argument("uuid", StringArgumentType.word())
+			.then(ArgumentBuilderLiteral.literal("getusernames")
+				.then(ArgumentBuilderRequired.argument("uuid", ArgumentTypeString.word())
 					.executes((c) -> {
 						CommandSource source = (CommandSource)c.getSource();
 						Player player = source.getSender();
@@ -91,9 +91,9 @@ public class UUIDCommand implements CommandManager.CommandRegistry {
 					})
 				)
 			)
-			.then(LiteralArgumentBuilder.literal("remove")
-				.then(LiteralArgumentBuilder.literal("byusername")
-					.then(RequiredArgumentBuilder.argument("username", StringArgumentType.word())
+			.then(ArgumentBuilderLiteral.literal("remove")
+				.then(ArgumentBuilderLiteral.literal("byusername")
+					.then(ArgumentBuilderRequired.argument("username", ArgumentTypeString.word())
 						.executes((c) -> {
 							CommandSource source = (CommandSource)c.getSource();
 							Player player = source.getSender();
@@ -108,8 +108,8 @@ public class UUIDCommand implements CommandManager.CommandRegistry {
 						})
 					)
 				)
-				.then(LiteralArgumentBuilder.literal("byuuid")
-					.then(RequiredArgumentBuilder.argument("uuid", StringArgumentType.word())
+				.then(ArgumentBuilderLiteral.literal("byuuid")
+					.then(ArgumentBuilderRequired.argument("uuid", ArgumentTypeString.word())
 						.executes((c) -> {
 							CommandSource source = (CommandSource)c.getSource();
 							Player player = source.getSender();
