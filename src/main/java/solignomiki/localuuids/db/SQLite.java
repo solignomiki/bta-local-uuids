@@ -13,7 +13,16 @@ public class SQLite {
 	private static String url;
 
 	private SQLite(String path, String filename) {
-		url = "jdbc:sqlite:" + path + filename + ".db";
+		File dbDir = new File(path);
+		if (!dbDir.exists()) {
+			if (dbDir.mkdirs()) {
+				LocalUUIDs.LOGGER.info("Created directory: {}", path);
+			} else {
+				LocalUUIDs.LOGGER.error("Failed to create directory: {}", path);
+			}
+		}
+
+		url = "jdbc:sqlite:" + path + File.separator + filename + ".db";
 		try
 		{
 			connection = DriverManager.getConnection(url);
@@ -23,7 +32,7 @@ public class SQLite {
 
 		} catch (SQLException e)
 		{
-			LocalUUIDs.LOGGER.info("Failed connection to SQLite db");
+			LocalUUIDs.LOGGER.error("Failed connection to SQLite db: {}", e.getMessage());
 		}
 	}
 
